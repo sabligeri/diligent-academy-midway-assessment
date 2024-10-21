@@ -19,3 +19,26 @@ export async function list(store: Store<RecipeType[]>, args: string[]) {
   console.log('Your recipes:');
   console.log(formatted);
 }
+
+export async function details(store: Store<RecipeType[]>, args: string[]) {
+
+  if(args.length !== 1) {
+    throw new AppError("The argument of the details command should be a single number! e.g.: 12, 3, 1, 123");
+  }
+  
+  const id = parseInt(args[0])
+
+  if(isNaN(id)) {
+    throw new AppError("The id should be a numeric value, a single number. e.g.: 12, 3, 1, 123");
+  }
+
+  const recipe = new Recipe(store);
+  const recipes = await recipe.readAll();
+  const foundRecipe = recipes.find(recipe => recipe.id === id);
+
+  if (!foundRecipe) {
+    throw new AppError(`The recipe with the ID ${id} is not found.`);
+  }
+
+  console.log(`Here is the recepie with the ID: ${foundRecipe.id}: ${foundRecipe.name} - ${foundRecipe.id}`);
+}
